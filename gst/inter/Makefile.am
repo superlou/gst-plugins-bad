@@ -1,6 +1,9 @@
 plugin_LTLIBRARIES = libgstinter.la
 
-noinst_PROGRAMS = gstintertest
+noinst_PROGRAMS = \
+	gstintertest \
+	gstintertest_change_src_channels \
+	gstintertest_change_sink_channels
 
 libgstinter_la_SOURCES = \
 	gstinteraudiosink.c \
@@ -48,6 +51,32 @@ gstintertest_LDADD = \
 	$(GST_PLUGINS_BASE_LIBS) \
 	$(GST_LIBS) \
 	$(LIBM)
+
+gstintertest_change_src_channels_SOURCES = \
+	gstintertest_change_src_channels.c
+
+gstintertest_change_src_channels_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+	$(GST_CFLAGS)
+
+gstintertest_change_src_channels_LDADD = \
+	$(GST_PLUGINS_BASE_LIBS) \
+	$(GST_LIBS) \
+	$(LIBM)
+
+gstintertest_change_sink_channels_SOURCES = \
+	gstintertest_change_sink_channels.c
+
+gstintertest_change_sink_channels_CFLAGS = \
+	$(GST_PLUGINS_BAD_CFLAGS) \
+	$(GST_PLUGINS_BASE_CFLAGS) \
+	$(GST_CFLAGS)
+
+gstintertest_change_sink_channels_LDADD = \
+	$(GST_PLUGINS_BASE_LIBS) \
+	$(GST_LIBS) \
+	$(LIBM)	
 
 Android.mk: Makefile.am $(BUILT_SOURCES)
 	androgenizer \

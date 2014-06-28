@@ -134,6 +134,11 @@ gst_inter_sub_sink_set_property (GObject * object, guint property_id,
     case PROP_CHANNEL:
       g_free (intersubsink->channel);
       intersubsink->channel = g_value_dup_string (value);
+
+      if (intersubsink->surface) {
+        gst_inter_surface_unref (intersubsink->surface);
+      }
+      intersubsink->surface = gst_inter_surface_get (intersubsink->channel);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);

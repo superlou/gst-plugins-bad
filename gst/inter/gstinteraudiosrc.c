@@ -148,6 +148,11 @@ gst_inter_audio_src_set_property (GObject * object, guint property_id,
     case PROP_CHANNEL:
       g_free (interaudiosrc->channel);
       interaudiosrc->channel = g_value_dup_string (value);
+
+      if (interaudiosrc->surface) {
+        gst_inter_surface_unref (interaudiosrc->surface);
+      }
+      interaudiosrc->surface = gst_inter_surface_get (interaudiosrc->channel);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -195,21 +200,16 @@ gst_inter_audio_src_set_caps (GstBaseSrc * src, GstCaps * caps)
 
   structure = gst_caps_get_structure (caps, 0);
 
-  if (!gst_structure_get_int (structure, "rate", &sample_rate)) {
-    GST_ERROR_OBJECT (src, "Audio caps without rate");
-    return FALSE;
+  ret = gst_structure_get_int (structure, "rate", &sample_rate);
+  if (ret) {
+    interaudiosrc->sample_rate = sample_rate;
+
+    ret = gst_pad_set_caps (src->srcpad, caps);
   }
 
-  interaudiosrc->sample_rate = sample_rate;
-
-  if (!gst_audio_info_from_caps (&info, caps)) {
-    GST_ERROR_OBJECT (src, "Can't parse audio caps");
-    return FALSE;
+  if (gst_audio_info_from_caps (&info, caps)) {
+    interaudiosrc->finfo = info.finfo;
   }
-
-  interaudiosrc->finfo = info.finfo;
-
-  ret = gst_pad_set_caps (src->srcpad, caps);
 
   return ret;
 }

@@ -137,6 +137,11 @@ gst_inter_audio_sink_set_property (GObject * object, guint property_id,
     case PROP_CHANNEL:
       g_free (interaudiosink->channel);
       interaudiosink->channel = g_value_dup_string (value);
+
+      if (interaudiosink->surface) {
+        gst_inter_surface_unref (interaudiosink->surface);
+      }
+      interaudiosink->surface = gst_inter_surface_get (interaudiosink->channel);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);

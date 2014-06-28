@@ -139,6 +139,11 @@ gst_inter_sub_src_set_property (GObject * object, guint property_id,
     case PROP_CHANNEL:
       g_free (intersubsrc->channel);
       intersubsrc->channel = g_value_dup_string (value);
+
+      if (intersubsrc->surface) {
+        gst_inter_surface_unref (intersubsrc->surface);
+      }
+      intersubsrc->surface = gst_inter_surface_get (intersubsrc->channel);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -161,7 +166,6 @@ gst_inter_sub_src_get_property (GObject * object, guint property_id,
       break;
   }
 }
-
 
 static gboolean
 gst_inter_sub_src_start (GstBaseSrc * src)

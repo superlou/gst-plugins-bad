@@ -142,6 +142,11 @@ gst_inter_video_src_set_property (GObject * object, guint property_id,
     case PROP_CHANNEL:
       g_free (intervideosrc->channel);
       intervideosrc->channel = g_value_dup_string (value);
+
+      if (intervideosrc->surface) {
+        gst_inter_surface_unref (intervideosrc->surface);
+      }
+      intervideosrc->surface = gst_inter_surface_get (intervideosrc->channel);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
